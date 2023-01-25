@@ -15,7 +15,7 @@ groups:
         github:
           repository: fern-covalent/covalent-openapi
       - name: fernapi/fern-postman
-        version: 0.0.33
+        version: 0.0.34
         output:
           location: postman
           api-key: ${FERN_POSTMAN_API_KEY}
