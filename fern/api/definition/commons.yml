@@ -1,4 +1,15 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
-
-types:
-  id: string
+types: 
+  AppliedPagination:
+    properties:
+      has_more:
+        type: boolean
+        docs: true if we can paginate to get more data.
+      page_number:
+        type: integer
+        docs: The specific page being returned.
+      page_size:
+        type: integer
+        docs: The number of results per page.
+      total_count:
+        type: integer
+        docs: Total number of entries.
