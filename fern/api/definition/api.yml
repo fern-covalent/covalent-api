@@ -1,6 +1,6 @@
 name: api
-auth: bearer
-environments:
-  Production: https://api.example.com
-  Sandbox: https://sandbox.example.com
+display-name: Covalent API
+auth: basic
 default-environment: Production
+environments: 
+  Production: https://api.covalenthq.com

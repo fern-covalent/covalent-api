@@ -1,0 +1,74 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fern-api/fern/main/fern.schema.json
+
+imports:
+  commons: commons.yml
+
+services:
+  http:
+    PricingService:
+      auth: true
+      base-path: /v1/pricing/historical_by_address/{chain_id}
+      path-parameters:
+        chain_id: string
+      endpoints:
+        getTokenIds:
+          path: /{quote_currency}/{contract_address}/nft_token_ids/
+          method: GET
+          docs: > 
+            [Full Endpoint Documentation](https://www.covalenthq.com/docs/api/#/0/Get%20NFT%20transactions%20for%20contract/USD/1)
+            
+            Given `chain_id` and `contract_address`, return a list of all token IDs 
+            for the NFT contract on the blockchain."
+          display-name: Get NFT Token IDs for contract
+          path-parameters:
+            quote_currency: string
+            contract_address: string
+          request: 
+            name: TokenIdsRequestType
+            query-parameters: 
+              page_number:
+                docs: The specific page to be returned.
+                type: optional<integer>
+              page_size:
+                docs: The number of results per page.
+                type: optional<integer>
+              # NOTE: format query param is excluded since SDK will only support JSON deserialization
+          response: TokenIdResponseType
+
+types: 
+
+  TokenIdResponse:
+    properties:
+      contract_decimals: 
+          type: integer
+          docs: Smart contract decimals.
+      contract_name: 
+          type: string
+          docs: Smart contract name.
+      contract_ticker_symbol: 
+          type: string
+          docs: Smart contract ticker symbol.
+      contract_address: 
+          type: string
+          docs: Smart contract address.
+      supports_erc: 
+          type: list<string>
+          docs: | 
+            The standard interface(s) supported for this token, eg: `ERC-20`.
+      logo_url: 
+          type: string
+          docs: Smart contract URL.
+      token_id: 
+          type: integer
+          docs: The list of token ids under the contract address.
+
+  TokenIdResponseType:
+    properties:
+      updated_at: 
+          type: datetime
+          docs: The updated time in UTC.
+      items: 
+          type: list<TokenIdResponse>
+          docs: List of tokens in portfolio
+      pagination: commons.AppliedPagination
+          
