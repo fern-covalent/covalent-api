@@ -9,7 +9,7 @@ services:
       auth: true
       base-path: /v1/{chain_id}
       path-parameters:
-        chain_id: string
+        chain_id: integer
       endpoints:
         getTokenBalances:
           path: /address/{wallet_address}/balances_v2/
@@ -43,6 +43,12 @@ services:
                 docs: The requested fiat currency.
               # NOTE: format query param is excluded since SDK will only support JSON deserialization
           response: BalanceResponseType
+          examples: 
+            - path-parameters: 
+                chain_id: 1
+                wallet_address: demo.eth
+              response: 
+                body: $BalanceResponseType.Example0
 
         getHistoricalPortfolioValue:
           path: /address/{wallet_address}/portfolio_v2/
@@ -69,6 +75,12 @@ services:
                   The range of the historical portfolio in days, defaults to 30 days (max days = 2000).
               # NOTE: format query param is excluded since SDK will only support JSON deserialization
           response: HistoricalPortfolioResponse
+          examples: 
+            - path-parameters: 
+                chain_id: 1
+                wallet_address: demo.eth
+              response: 
+                body: $HistoricalPortfolioResponse.Example0
 
 types: 
   BalanceResponseType: 
@@ -86,6 +98,17 @@ types:
         docs: The requested fiat currency.
         type: string
       items: list<WalletBalanceItem>
+      chain_id: integer
+    examples: 
+      - name: Example0
+        value: 
+          address: '0xfc43f5f9dd45258b3aff31bdbe6561d97e8b71de'
+          updated_at: '2023-01-25T04:17:23.493591785Z'
+          next_update_at: '2023-01-25T04:22:23.493592426Z'
+          quote_currency: USD
+          chain_id: 1
+          items: 
+            - $WalletBalanceItem.Example0
   
   WalletBalanceItem:
     properties: 
@@ -119,10 +142,10 @@ types:
         type: string
         docs: One of `cryptocurrency`, `stablecoin`, `nft` or `dust`.
       balance:
-        type: integer
+        type: string
         docs: The asset balance. Use `contract_decimals` to scale this balance for display purposes.
       balance_24h:
-        type: integer
+        type: string
         docs: The asset balance 24 hours ago.
       quote_rate:
         type: double
@@ -135,10 +158,25 @@ types:
         docs: The current balance converted to fiat in `quote-currency`.
       quote_24h:
         type: double
-      
-  INFTMetadata: 
-    docs: Array of NFTs that are held under this contract.
-    type: list<unknown>
+    examples: 
+      - name: Example0
+        value: 
+          contract_decimals: 18
+          contract_name: Frontier Token
+          contract_ticker_symbol: FRONT
+          contract_address: '0xf8c3527cc04340b208c854e985240c02f7b7793f'
+          supports_erc:
+          - erc20
+          logo_url: https://logos.covalenthq.com/tokens/1/0xf8c3527cc04340b208c854e985240c02f7b7793f.png
+          last_transferred_at: '2022-09-27T15:29:11Z'
+          native_token: false
+          type: cryptocurrency
+          balance: '4843997835959514312853'
+          balance_24h: '4843997835959514312853'
+          quote_rate: 0.212
+          quote_rate_24h: 0.21129668
+          quote: 1026.9275
+          quote_24h: 1023.5206
   
   HistoricalPortfolioResponse:
     properties: 
@@ -158,6 +196,77 @@ types:
         type: integer
         docs: The requested chain ID.
       items: 
-        type: list<unknown>
+        type: list<Token>
         docs: List of tokens in portfolio
-      pagination: commons.AppliedPagination
+      pagination: optional<commons.AppliedPagination>
+    examples: 
+      - name: Example0
+        value: 
+          address: '0xfc43f5f9dd45258b3aff31bdbe6561d97e8b71de'
+          updated_at: '2023-01-25T02:01:49.099038051Z'
+          next_update_at: '2023-01-25T02:06:49.099038382Z'
+          quote_currency: USD
+          chain_id: 1
+          items: 
+            - $Token.Example0
+  
+  Token:
+    properties: 
+      contract_decimals: 
+        type: integer
+        docs: Smart contract decimals.
+      contract_name: 
+        type: string
+        docs: Smart contract name.
+      contract_ticker_symbol: 
+        type: string
+        docs: Smart contract ticker symbol.
+      contract_address: 
+        type: string
+        docs: Smart contract address.
+      logo_url: 
+        type: string
+        docs: Smart contract URL.
+      holdings: 
+        type: list<Holding>
+    examples: 
+      - name: Example0
+        value: 
+          contract_decimals: 18
+          contract_name: Frontier Token
+          contract_ticker_symbol: FRONT
+          contract_address: '0xf8c3527cc04340b208c854e985240c02f7b7793f'
+          logo_url: https://logos.covalenthq.com/tokens/1/0xf8c3527cc04340b208c854e985240c02f7b7793f.png
+          holdings:
+          - timestamp: '2023-01-25T00:00:00Z'
+            quote_rate: 0.20990574
+            open:
+              balance: '4843997835959514312853'
+              quote: 1016.783
+            high:
+              balance: '4843997835959514312853'
+              quote: 1016.783
+            low:
+              balance: '4843997835959514312853'
+              quote: 1016.783
+            close:
+              balance: '4843997835959514312853'
+              quote: 1016.783
+  
+  Holding: 
+    properties: 
+      timestamp: 
+        type: datetime
+        docs: Timestamp for holding.
+      quote_rate: 
+        type: double
+        docs: Quote rate for holding.
+      open: Balance
+      high: Balance
+      low: Balance
+      close: Balance
+  
+  Balance: 
+    properties: 
+      balance: string
+      quote: double

@@ -2,14 +2,14 @@ types:
   AppliedPagination:
     properties:
       has_more:
-        type: boolean
+        type: optional<boolean>
         docs: true if we can paginate to get more data.
       page_number:
-        type: integer
+        type: optional<integer>
         docs: The specific page being returned.
       page_size:
-        type: integer
+        type: optional<integer>
         docs: The number of results per page.
       total_count:
-        type: integer
+        type: optional<integer>
         docs: Total number of entries.

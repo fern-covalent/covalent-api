@@ -9,7 +9,7 @@ services:
       auth: true
       base-path: /v1/{chain_id}/tokens/{contract_address}
       path-parameters:
-        chain_id: string
+        chain_id: integer
         contract_address: string
       endpoints:
         getTokenIds:
@@ -33,6 +33,12 @@ services:
                 type: optional<integer>
               # NOTE: format query param is excluded since SDK will only support JSON deserialization
           response: TokenIdResponseType
+          examples: 
+            - path-parameters: 
+                chain_id: 1
+                contract_address: "0xe4605d46fd0b3f8329d936a8b258d69276cba264"
+              response: 
+                body: $TokenIdResponseType.Example0
 
 types: 
 
@@ -51,23 +57,43 @@ types:
           type: string
           docs: Smart contract address.
       supports_erc: 
-          type: list<string>
+          type: optional<list<string>>
           docs: | 
             The standard interface(s) supported for this token, eg: `ERC-20`.
       logo_url: 
           type: string
           docs: Smart contract URL.
       token_id: 
-          type: integer
+          type: string
           docs: The list of token ids under the contract address.
+    examples: 
+      - name: Example0
+        value: 
+          contract_decimals: 0
+          contract_name: Meme Ltd.
+          contract_ticker_symbol: MEMES
+          contract_address: '0xe4605d46fd0b3f8329d936a8b258d69276cba264'
+          supports_erc:
+          logo_url: https://logos.covalenthq.com/tokens/0xe4605d46fd0b3f8329d936a8b258d69276cba264.png
+          token_id: '1'
 
   TokenIdResponseType:
     properties:
       updated_at: 
-          type: datetime
-          docs: The updated time in UTC.
+        type: datetime
+        docs: The updated time in UTC.
       items: 
-          type: list<TokenIdResponse>
-          docs: List of tokens in portfolio
-      pagination: commons.AppliedPagination
+        type: list<TokenIdResponse>
+        docs: List of tokens in portfolio
+      pagination: optional<commons.AppliedPagination>
+    examples: 
+      - name: Example0
+        value: 
+          updated_at: '2023-01-25T04:24:41.268693068Z'
+          items: 
+            - $TokenIdResponse.Example0
+          pagination: 
+            has_more: true
+            page_number: 0
+            page_size: 100
           
